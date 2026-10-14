@@ -1166,7 +1166,7 @@ app.get("/", (req, res) => {
 module.exports = app;
 
 if (require.main === module) {
-  app.listen(process.env.PORT || 3000, () => {
-    console.log(`Example app listening on port ${process.env.PORT || 3000}`);
+  app.listen(port, () => {
+    console.log(`Example app listening on port ${port}`);
   });
 }

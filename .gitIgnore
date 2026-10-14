@@ -1,1 +1,11 @@
+@'
 .env
+.env.*
+node_modules/
+.vercel/
+.vercel-backup/
+.vercel-old*/
+*firebase-adminsdk*.json
+vercel.backup.json
+vercel-old-*.json
+.vercel
