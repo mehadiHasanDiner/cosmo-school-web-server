@@ -46,9 +46,9 @@ async function run() {
     const employeesCollection = cosmoDB.collection("employees");
     const studentsCollection = cosmoDB.collection("students");
     const guardianStudentsCollection = cosmoDB.collection("guardianStudents");
+    const clubsCollection = cosmoDB.collection("clubs");
 
     // all users related api
-
     app.post("/users", async (req, res) => {
       try {
         const user = req.body;
@@ -1147,6 +1147,26 @@ async function run() {
         });
       }
     });
+
+    app.get("/clubs", async (req, res) => {
+      try {
+        const clubs = await clubsCollection.find({}).toArray();
+
+        return res.send({
+          success: true,
+          message: "Clubs retrieved successfully",
+          data: clubs,
+        });
+      } catch (error) {
+        console.error("Get clubs error:", error);
+
+        return res.status(500).send({
+          success: false,
+          message: "Failed to retrieve clubs",
+        });
+      }
+    });
+
     await clientPromise;
     await client.db("admin").command({ ping: 1 });
     console.log(
