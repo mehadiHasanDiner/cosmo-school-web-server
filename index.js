@@ -47,6 +47,7 @@ async function run() {
     const studentsCollection = cosmoDB.collection("students");
     const guardianStudentsCollection = cosmoDB.collection("guardianStudents");
     const clubsCollection = cosmoDB.collection("clubs");
+    const galleryImagesCollection = cosmoDB.collection("galleryImages");
 
     // all users related api
     app.post("/users", async (req, res) => {
@@ -1148,21 +1149,57 @@ async function run() {
       }
     });
 
-    app.get("/clubs", async (req, res) => {
+    // ===========================================
+    // Clubs API
+    // ===========================================
+
+    // app.get("/clubs", async (req, res) => {
+    //   try {
+    //     const clubs = await clubsCollection.find({}).toArray();
+
+    //     return res.send({
+    //       success: true,
+    //       message: "Clubs retrieved successfully",
+    //       data: clubs,
+    //     });
+    //   } catch (error) {
+    //     console.error("Get clubs error:", error);
+
+    //     return res.status(500).send({
+    //       success: false,
+    //       message: "Failed to retrieve clubs",
+    //     });
+    //   }
+    // });
+
+    // ===========================================
+    // Gallery Images API
+    // ===========================================
+    app.get("/gallery/images", async (req, res) => {
       try {
-        const clubs = await clubsCollection.find({}).toArray();
+        const { category } = req.query;
 
-        return res.send({
-          success: true,
-          message: "Clubs retrieved successfully",
-          data: clubs,
-        });
+        // Gallery images filter published status অনুযায়ী
+        const filter = {
+          status: "published",
+        };
+
+        // All হলে category filter হবে না
+        if (category && category !== "all") {
+          filter.categorySlug = category;
+        }
+
+        const images = await galleryImagesCollection
+          .find(filter)
+          .sort({ sortOrder: 1, createdAt: -1 })
+          .toArray();
+
+        res.send(images);
       } catch (error) {
-        console.error("Get clubs error:", error);
-
-        return res.status(500).send({
+        console.error("Get gallery images error:", error);
+        res.status(500).send({
           success: false,
-          message: "Failed to retrieve clubs",
+          message: "Failed to retrieve gallery images",
         });
       }
     });
