@@ -664,6 +664,22 @@ async function run() {
 
     // all admin's apis
 
+    // all users list for admin dashboard
+    app.get("/admin/users/all", async (req, res) => {
+      try {
+        const cursor = usersCollection.find().sort({ createdAt: -1 });
+        const result = await cursor.toArray();
+        res.send(result);
+      } catch (error) {
+        console.error(error);
+        res.status(500).send({
+          success: false,
+          message: "Internal server error",
+        });
+      }
+    });
+
+    // pending verification user list
     app.get("/admin/users", async (req, res) => {
       // const query = {};
       // query.$or = {
@@ -711,7 +727,7 @@ async function run() {
           roles: "teacher",
           verificationStatus: "approved",
         });
-        console.log("Teacher role", teachers.roles);
+        // console.log("Teacher role", teachers.roles);
         /*
       ================================================
       কতগুলো account এখন Admin approval-এর অপেক্ষায় আছে
