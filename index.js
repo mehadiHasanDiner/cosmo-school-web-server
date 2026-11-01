@@ -46,7 +46,7 @@ async function run() {
     const employeesCollection = cosmoDB.collection("employees");
     const studentsCollection = cosmoDB.collection("students");
     const guardianStudentsCollection = cosmoDB.collection("guardianStudents");
-    const clubsCollection = cosmoDB.collection("clubs");
+    // const clubsCollection = cosmoDB.collection("clubs");
     const galleryImagesCollection = cosmoDB.collection("galleryImages");
 
     // all users related api
