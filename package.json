@@ -4,7 +4,7 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "start": "node index.js",
+    "start": "node index.js --host",
     "dev": "node --watch index.js",
     "lint": "eslint ."
   },
