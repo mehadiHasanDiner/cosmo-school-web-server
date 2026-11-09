@@ -680,6 +680,60 @@ async function run() {
       }
     });
 
+    app.get("/admin/employees/by-role", async (req, res) => {
+      try {
+        const { role } = req.query;
+
+        // Step 1: শুধু admin অথবা teacher গ্রহণ করব
+        if (!["admin", "teacher"].includes(role)) {
+          return res.status(400).send({
+            message: "Invalid role",
+          });
+        }
+
+        // Step 2: users collection থেকে role অনুযায়ী user খুঁজব
+        const users = await usersCollection
+          .find({
+            roles: role,
+            verificationStatus: "approved",
+          })
+          .toArray();
+
+        // Step 3: প্রতিটি user-এর employee profile খুঁজব
+        const employees = await Promise.all(
+          users.map(async (user) => {
+            const employee = await employeesCollection.findOne({
+              userId: user._id,
+            });
+
+            // Employee profile না থাকলে বাদ
+            if (!employee) return null;
+
+            // User + Employee তথ্য একসঙ্গে return
+            return {
+              ...employee,
+              name: user.name,
+              email: user.email,
+              roles: user.roles,
+            };
+          }),
+        );
+
+        // Step 4: null বাদ দিয়ে নাম অনুযায়ী sort
+        const result = employees
+          .filter(Boolean)
+          .sort((a, b) => a.employeeName.localeCompare(b.employeeName));
+
+        res.send(result);
+      } catch (error) {
+        console.error(error);
+
+        res.status(500).send({
+          message: "Failed to load employees",
+        });
+      }
+    });
+
     // pending verification user list
     app.get("/admin/users", async (req, res) => {
       // const query = {};
